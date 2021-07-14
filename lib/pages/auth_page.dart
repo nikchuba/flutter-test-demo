@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:miapp/text_input_widget.dart';
-import 'app_colors.dart';
+import 'package:miapp/widgets/text_input_widget.dart';
+import '../app_colors.dart';
 
 class AuthPage extends StatefulWidget {
   AuthPage({Key? key}) : super(key: key);
 
   @override
-  _AuthWidgetState createState() => _AuthWidgetState();
+  _AuthPageState createState() => _AuthPageState();
 }
 
-class _AuthWidgetState extends State<AuthPage> {
+class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,18 +32,25 @@ class _AuthForm extends StatefulWidget {
 }
 
 class __AuthFormState extends State<_AuthForm> {
-  final double height = 39;
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextInputWidget(hintText: 'Enter your username'),
+        TextInputWidget(
+            hintText: 'Enter your username',
+            validator: (text) => text.length < 4,
+            errorText: 'Minimum is 4 characters'),
         SizedBox(height: 15),
-        TextInputWidget(hintText: 'Enter your password'),
+        TextInputWidget(
+          hintText: 'Enter your password',
+          validator: (text) => text.length < 8,
+          errorText: 'Minimum is 8 characters',
+          obscure: true,
+        ),
         SizedBox(height: 30),
         SizedBox(
-          height: height,
+          height: 39,
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(

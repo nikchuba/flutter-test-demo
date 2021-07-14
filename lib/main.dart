@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'auth_page.dart';
+import 'pages/auth_page.dart';
 import 'app_colors.dart';
 
 void main() {

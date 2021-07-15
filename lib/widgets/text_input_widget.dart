@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import '../app_colors.dart';
 
 class TextInputWidget extends StatefulWidget {
+  final TextEditingController controller = TextEditingController(text: '');
   final String hintText;
-  final String errorText;
+  final String? errorText;
   final bool obscure;
-  bool Function(String) validator;
+  final bool? isError;
+  final Function(String)? onInput;
 
   TextInputWidget(
       {required this.hintText,
-      required this.validator,
-      required this.errorText,
+      this.isError,
+      this.onInput,
+      this.errorText,
       this.obscure = false});
 
   @override
@@ -18,16 +21,12 @@ class TextInputWidget extends StatefulWidget {
 }
 
 class _TextInputWidgetState extends State<TextInputWidget> {
-  TextEditingController _controller = TextEditingController();
-  bool _isError = false;
+  TextEditingController? controller;
 
   @override
   initState() {
-    this._controller.addListener(() {
-      this.setState(() {
-        this._isError = this.widget.validator(this._controller.value.text);
-      });
-    });
+    this.controller = this.widget.controller;
+
     super.initState();
   }
 
@@ -35,7 +34,11 @@ class _TextInputWidgetState extends State<TextInputWidget> {
   Widget build(BuildContext context) {
     return TextField(
       obscureText: this.widget.obscure,
-      controller: _controller,
+      controller: this.controller,
+      onChanged: (value) {
+        print(value);
+        this.widget.onInput!(value);
+      },
       textAlign: TextAlign.center,
       style: TextStyle(
         decoration: TextDecoration.none,
@@ -45,12 +48,12 @@ class _TextInputWidgetState extends State<TextInputWidget> {
         isCollapsed: true,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.grey),
           borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: AppColors.grey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.lightgreen),
           borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: AppColors.lightgreen),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
@@ -61,7 +64,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
         hintStyle: TextStyle(
           color: AppColors.grey,
         ),
-        errorText: this._isError ? this.widget.errorText : null,
+        errorText: this.widget.isError! ? this.widget.errorText : null,
       ),
     );
   }

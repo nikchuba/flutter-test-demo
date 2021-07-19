@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:miapp/app_colors.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  final dynamic data;
+  MainPage({required this.data});
 
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,16 +27,18 @@ class MainPage extends StatelessWidget {
                   child: Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.pushReplacementNamed(context, '/auth');
+                    print(this.widget.data);
                   },
                 ),
               ),
             ],
           ),
           bottom: TabBar(
+            indicatorColor: AppColors.lightgreen,
             tabs: [
               Tab(text: 'On hold'),
               Tab(text: 'In progress'),
-              Tab(text: 'Needs revle'),
+              Tab(text: 'Needs review'),
               Tab(text: 'Approved'),
             ],
           ),
@@ -38,7 +46,7 @@ class MainPage extends StatelessWidget {
         body: TabBarView(
           children: [
             Center(
-              child: Text('On hold',
+              child: Text('${this.widget.data}',
                   style: TextStyle(color: AppColors.lightgreen, fontSize: 50)),
             ),
             Center(
@@ -46,7 +54,7 @@ class MainPage extends StatelessWidget {
                   style: TextStyle(color: AppColors.lightgreen, fontSize: 50)),
             ),
             Center(
-              child: Text('Needs revle',
+              child: Text('Needs review',
                   style: TextStyle(color: AppColors.lightgreen, fontSize: 50)),
             ),
             Center(
@@ -59,3 +67,23 @@ class MainPage extends StatelessWidget {
     );
   }
 }
+
+// class MainBodyWidget extends StatefulWidget {
+//   final dynamic data;
+//   MainBodyWidget({required this.data});
+
+//   @override
+//   _MainBodyWidgetState createState() => _MainBodyWidgetState();
+// }
+
+// class _MainBodyWidgetState extends State<MainBodyWidget> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView(
+//       children: [
+//         Text(this.widget.data,
+//             style: TextStyle(color: AppColors.lightgreen, fontSize: 20)),
+//       ],
+//     );
+//   }
+// }

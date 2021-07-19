@@ -7,7 +7,13 @@ void main() {
   runApp(App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  dynamic data;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,8 +35,12 @@ class App extends StatelessWidget {
       ),
       initialRoute: '/auth',
       routes: {
-        '/auth': (context) => AuthPage(),
-        '/main': (context) => MainPage()
+        '/auth': (context) => AuthPage(shareDataCards: (data) {
+              this.setState(() {
+                this.data = data;
+              });
+            }),
+        '/main': (context) => MainPage(data: this.data)
       },
     );
   }

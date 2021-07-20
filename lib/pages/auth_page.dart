@@ -64,16 +64,17 @@ class __AuthFormState extends State<_AuthForm> {
         });
       }
       print(response.data);
-      print(response.statusCode);
-    } catch (e) {
-      print(e);
+    } on DioError catch (e) {
+      this.setState(() {
+        this.widget.shareDataCards(e.response?.data);
+      });
     }
   }
 
   Future<bool> auth() async {
     Map<String, String> body = {
-      "username": "armada",
-      "password": "FSH6zBZ0p9yH"
+      "username": this.login,
+      "password": this.password
     };
     String url = 'https://trello.backend.tests.nekidaem.ru/api/v1/users/login/';
     try {
@@ -82,11 +83,18 @@ class __AuthFormState extends State<_AuthForm> {
       this.getCards(token);
       return true;
     } on DioError catch (e) {
-      setState(() {
-        this.serverError['status'] = e.response?.statusCode;
-        this.serverError['msg'] = e.message;
-      });
-      print(e);
+      if (e.response != null) {
+        var errMsg = e.response?.data['non_field_errors'][0];
+        setState(() {
+          this.serverError['status'] = e.error;
+          this.serverError['msg'] = errMsg;
+        });
+      } else {
+        setState(() {
+          this.serverError['status'] = e.error;
+          this.serverError['msg'] = e.message;
+        });
+      }
       return false;
     }
   }
@@ -133,11 +141,13 @@ class __AuthFormState extends State<_AuthForm> {
           height: 39,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () async {
-              if (await auth())
-                Navigator.pushReplacementNamed(context, '/main');
-              // await auth();
-            },
+            style: ElevatedButton.styleFrom(onSurface: AppColors.lightgreen),
+            onPressed: isValid()
+                ? () async {
+                    if (await auth())
+                      Navigator.pushReplacementNamed(context, '/main');
+                  }
+                : null,
             child: Text('Log in', style: TextStyle(color: AppColors.grey)),
           ),
         ),
@@ -145,9 +155,19 @@ class __AuthFormState extends State<_AuthForm> {
           height: 15,
         ),
         if (serverError['msg'] != '')
-          Text(
-            'Response status: ${serverError["status"]} Response body: ${serverError["msg"]}',
-            style: TextStyle(color: AppColors.red, fontSize: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${serverError["status"]}',
+                style: TextStyle(color: AppColors.red, fontSize: 14),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Error message: ${serverError["msg"]}',
+                style: TextStyle(color: AppColors.red, fontSize: 14),
+              ),
+            ],
           ),
       ],
     );

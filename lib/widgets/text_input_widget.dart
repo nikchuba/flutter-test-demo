@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../app_colors.dart';
 
 class TextInputWidget extends StatefulWidget {
@@ -36,8 +37,14 @@ class _TextInputWidgetState extends State<TextInputWidget> {
       obscureText: this.widget.obscure,
       controller: this.controller,
       onChanged: (value) {
-        print(value);
-        this.widget.onInput!(value);
+        final trimVal = value.trim();
+        (value != trimVal)
+            ? setState(() {
+                this.controller?.text = trimVal;
+                this.controller?.selection = TextSelection.fromPosition(
+                    TextPosition(offset: trimVal.length));
+              })
+            : this.widget.onInput!(trimVal);
       },
       textAlign: TextAlign.center,
       style: TextStyle(

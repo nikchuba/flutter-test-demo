@@ -3,13 +3,20 @@ import 'package:miapp/app_colors.dart';
 
 class MainPage extends StatefulWidget {
   final dynamic data;
-  MainPage({required this.data});
+  MainPage({Key? key, required this.data}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+  dynamic data;
+  @override
+  void initState() {
+    this.data = this.widget.data;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -46,7 +53,7 @@ class _MainPageState extends State<MainPage> {
         body: TabBarView(
           children: [
             Center(
-              child: Text('${this.widget.data}',
+              child: Text('${this.data}',
                   style: TextStyle(color: AppColors.lightgreen, fontSize: 50)),
             ),
             Center(
